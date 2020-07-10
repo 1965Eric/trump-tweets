@@ -1,1 +1,3 @@
-# trump-tweets
+## Text mining of Trump-tweets
+
+During the 2016 US presidential election, then-candidate Donald J. Trump used his Twitter account as a way to communicate with potential voters. On August 6, 2016 Todd Vaziri [tweeted](https://twitter.com/tvaziri/status/762005541388378112) about Trump that "Every non-hyperbolic tweet is from iPhone (his staff). Every hyperbolic tweet is from Android (from him)." Data scientist David Robinson conducted an [analysis](http://varianceexplained.org/r/trump-tweets/) to determine if data supported this assertion. Here I go through David's analysis to learn some of the basics of text mining. To learn more about text mining in R I recommend [this book](https://www.tidytextmining.com).
