@@ -48,4 +48,40 @@ trump_tweets %>%
   extract(source, "source", "Twitter for (.*)") %>%
   count(source) 
 
+# We are interested in what happened during the campaign, so for the analysis here we will focus on what was tweeted between the day Trump announced his campaign and election day. 
+# So we define the following table.
+
+campaign_tweets <- trump_tweets %>% 
+  extract(source, "source", "Twitter for (.*)") %>%
+  filter(source %in% c("Android", "iPhone") &
+           created_at >= ymd("2015-06-17") & 
+           created_at < ymd("2016-11-08")) %>%
+  filter(!is_retweet) %>%
+  arrange(created_at)
+
+# We can now use data visualization to explore the possibility that two different groups were tweeting from these devices. 
+# For each tweet, we will extract the hour, in the east coast (EST), it was tweeted then compute the proportion of tweets tweeted at each hour for each device.
+
+ds_theme_set()
+campaign_tweets %>%
+  mutate(hour = hour(with_tz(created_at, "EST"))) %>%
+  count(source, hour) %>%
+  group_by(source) %>%
+  mutate(percent = n / sum(n)) %>%
+  ungroup %>%
+  ggplot(aes(hour, percent, color = source)) +
+  geom_line() +
+  geom_point() +
+  scale_y_continuous(labels = percent_format()) +
+  labs(x = "Hour of day (EST)",
+       y = "% of tweets",
+       color = "")
+
+# We notice a big peak for the Android in early hours of the morning, between 6 and 8 AM. There seems to be a clear different in these patterns. 
+# We will therefore assume that two different entities are using these two devices. Now we will study how their tweets differ. To do this we introduce the tidytext package.
+
+# The tidytext package helps us convert free from text into a tidy table. Having the data in this format greatly facilitates data visualization and applying statistical techniques.
+
+library(tidytext)
+
 
