@@ -84,4 +84,48 @@ campaign_tweets %>%
 
 library(tidytext)
 
+# Now let's look at a quick example with a tweet number 3008.
+
+i <- 3008
+campaign_tweets$text[i]
+campaign_tweets[i,] %>% 
+  unnest_tokens(word, text) %>%
+  select(word)
+
+# Note that the function tries to convert tokens into words and strips characters important to twitter such as # and @. 
+# A token in twitter is not the same as in regular English. For this reason, instead of using the default token, words, we define a regex that captures twitter character. 
+# The pattern appears complex but all we are defining is a patter that starts with @, # or neither and is followed by any combination of letters or digits.
+
+pattern <- "([^A-Za-z\\d#@']|'(?![A-Za-z\\d#@]))"
+
+# We can now use the unnest_tokens() function with the regex option and appropriately extract the hashtags and mentions.
+
+campaign_tweets[i,] %>% 
+  mutate(text = str_replace_all(text, "https://t.co/[A-Za-z\\d]+|&amp;", ""))  %>%
+  unnest_tokens(word, text, token = "regex", pattern = pattern) %>%
+  select(word)
+
+# Now we are ready to extract the words for all our tweets.
+
+tweet_words <- campaign_tweets %>% 
+  mutate(text = str_replace_all(text, "https://t.co/[A-Za-z\\d]+|&amp;", ""))  %>%
+  unnest_tokens(word, text, token = "regex", pattern = pattern)
+
+# And we can now answer questions such as "what are the most commonly used words?"
+
+tweet_words %>% 
+  count(word) %>%
+  arrange(desc(n))
+
+# It is not surprising that these are the top words. The top words are not informative. 
+# The tidytext package has database of these commonly used words, referred to as stop words, in text mining.
+
+stop_words
+
+# If we filter out rows representing stop words with filter(!word %in% stop_words$word).
+
+tweet_words <- campaign_tweets %>% 
+  mutate(text = str_replace_all(text, "https://t.co/[A-Za-z\\d]+|&amp;", ""))  %>%
+  unnest_tokens(word, text, token = "regex", pattern = pattern) %>%
+  filter(!word %in% stop_words$word )
 
