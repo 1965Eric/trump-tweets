@@ -1,6 +1,9 @@
 ---
 title: "Trump tweets"
-output: html_document
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -226,7 +229,8 @@ android_iphone_or %>% filter(Android+iPhone > 100) %>%
   arrange(or)
 ```
 
-We already see somewhat of a pattern in the types of words that are being tweeted more in one device versus the other. However, we are not interested in specific words but rather in the tone. Vaziri's assertion is that the Android tweets are more hyperbolic. So how can we check this with data? Hyperbolic is a hard sentiment to extract from words as it relies on interpreting phrases. 
+We already see somewhat of a pattern in the types of words that are being tweeted more in one device versus the other. However, we are not interested in specific words but rather in the tone. Vaziri's assertion is that the Android tweets are more hyperbolic. So how can we check this with data? Hyperbolic is a hard sentiment to extract from words as it relies on interpreting phrases.
+
 However, words can be associated to more basic sentiment such as as anger, fear, joy and surprise. In the next section we demonstrate basic sentiment analysis. In sentiment analysis we assign a word to one or more "sentiment". Although this approach will miss context dependent sentiments, such as sarcasm, when performed on large numbers of words, summaries can provide insights. 
 The first step in sentiment analysis is to assign a sentiment to each word. The tidytext package includes several maps or lexicons in the object sentiments.
 
@@ -236,26 +240,26 @@ sentiments
 
 There are several lexicons in the tidytext package that give different sentiments. For example, the bing lexicon divides words into positive and negative. We can see this using the tidytext function get_sentiments().
 
-```{r}
+```{r, eval=FALSE, echo=TRUE}
 get_sentiments("bing")
 ```
 
 The AFINN lexicon assigns a score between -5 and 5, with -5 the most negative and 5 the most positive.
 
-```{r}
+```{r, eval=FALSE, echo=TRUE}
 get_sentiments("afinn")
 ```
 
 The loughran and nrc lexicons provide several different sentiments.
 
-```{r}
+```{r, eval=FALSE, echo=TRUE}
 get_sentiments("loughran") %>% count(sentiment)
-get_sentiments("nrc") %>% count(sentiment)
 ```
 
 For the analysis here we are interested in exploring the different sentiments of each tweet, so we will use the nrc lexicon.
 
 ```{r}
+get_sentiments("nrc") %>% count(sentiment)
 nrc <- get_sentiments("nrc") %>%
   select(word, sentiment)
 ```
